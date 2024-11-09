@@ -21,11 +21,14 @@ _comm: dict[str, tuple[Callable, list, str]] = {}
 def set_commands(commands: dict[str, tuple[Callable, list, str]]):
     """ Проверяем на корректность переданные доступные команды  """
     if not (isinstance(commands, dict)
-            and all(isinstance(k, str) and isinstance(v, tuple) for k, v in commands.items())
-            and all(isinstance(v[0], Callable) and isinstance(v[1], list) and isinstance(v[2], str) 
+            and all(isinstance(k, str) and isinstance(v, tuple) 
+                    for k, v in commands.items())
+            and all(isinstance(v[0], Callable) and 
+                    isinstance(v[1], list) and isinstance(v[2], str) 
                     for v in commands.values())
             ):
-        raise TypeError('COMMANDS type not dict[str, tuple[Callable, str]]')
+        raise TypeError(
+            'COMMANDS type not dict[str, tuple[Callable, str]]')
     global _comm
     _comm = commands
     
@@ -87,8 +90,8 @@ def draw_state(title: str,
     if caption_up != '':
         print(caption_up)
     # Список комманд
-    com = [f'{Fore.CYAN}{key}{' ' if _comm else ''}{' '.join(_comm[key][1])}'\
-           f'{CR} - {_comm[key][2]} ' 
+    com = [f'{Fore.CYAN}{key}{' ' if _comm else ''}'\
+           f'{' '.join(_comm[key][1])}{CR} - {_comm[key][2]} ' 
            for key in _comm]
     # Расчёт размера колонн
     com_len = [(len(key) + len(_comm[key][2]) + bool(_comm) 
@@ -114,7 +117,7 @@ def run(start: Callable):
     ret: tuple[Callable, tuple] = start, ()
     while True:
         try:
-            # Если нет планируемого состояния, запросить у пользователя
+            # Если нет состояния, запросить у пользователя
             if ret is None:
                 r = input('>>> ').split()
                 if r:
@@ -135,7 +138,8 @@ def run(start: Callable):
             elif isinstance(raw_ret, Callable):
                 ret = (raw_ret, tuple())
             elif isinstance(raw_ret, tuple):
-                if len(raw_ret) == 0 or not isinstance(raw_ret[0], Callable):
+                if (len(raw_ret) == 0 or 
+                    not isinstance(raw_ret[0], Callable)):
                     ret = None
                 else:
                     if len(raw_ret) == 1:
@@ -188,7 +192,9 @@ def input_str(max_lenght: int, s: str=" ") -> str:
             exit(0)
             
 
-def input_float(maximum: int, decimal_places: int, s: str=" ") -> float:
+def input_float(maximum: int, 
+                decimal_places: int, 
+                s: str=" ") -> float:
     """ Ввод float """
     
     while True:
@@ -201,7 +207,8 @@ def input_float(maximum: int, decimal_places: int, s: str=" ") -> float:
                 raise ValueError
             
             return f
-        except (EOFError, ValueError, TypeError, OverflowError) as e:
+        except (EOFError, ValueError, 
+                TypeError, OverflowError) as e:
             pass
         except (KeyboardInterrupt) as e:
             exit(0)
@@ -214,8 +221,10 @@ def input_date() -> dtf.date:
     while True:
         try:
             # Считываем строку, убирая пустые символы
-            print(f"Нажмите {Fore.CYAN}enter{CR} или введите {Fore.GREEN}дату{CR}")
-            r = input(f'{dtf.now().strftime('%d.%m.%y')} > ').replace(' ', '')
+            print(f"Нажмите {Fore.CYAN}enter{CR} "\
+                  f"или введите {Fore.GREEN}дату{CR}")
+            r = input(f'{dtf.now().strftime('%d.%m.%y')} > ')
+            r = r.replace(' ', '')
             if r == '':
                 # Текущее время
                 return dtf.now()

@@ -75,12 +75,15 @@ def state_open_base(*args):
 def state_save_base(*args):
     """ Сохраняет данные в файл """
     if len(args) == 0:
-        print("Сохранено!" if data.save_file() else "Нет доступа к записи!")
+        print("Сохранено!" if data.save_file() 
+              else "Нет доступа к записи!")
         return state_main, False
     else:
-        print(f"Сохранить изменения в новый файл: {' '.join(args)}?")
+        print(f"Сохранить изменения в новый файл:"\
+              f"{' '.join(args)}?")
         if tui.input_bool():
-            print("Сохранено!" if data.save_file(' '.join(args)) else "Нет доступа к записи!")
+            print("Сохранено!" if data.save_file(' '.join(args)) 
+                  else "Нет доступа к записи!")
             return state_main
 
 
@@ -145,8 +148,10 @@ def state_list(clear: bool=True, *args):
     commands = {
         '1': (state_main, [], 'главное меню'),
         '4': (state_list, [], 'просмотреть всю коллекцию'),
-        '41': (state_list_date, ['[ДД.ММ.ГГ]'], 'просмотреть по дате'),
-        '42': (state_list_type, ['<type>'], 'просмотреть по категории')
+        '41': (state_list_date, ['[ДД.ММ.ГГ]'], 
+               'просмотреть по дате'),
+        '42': (state_list_type, ['<type>'], 
+               'просмотреть по категории')
     }
     tui.set_commands(commands)
     if clear:
@@ -159,13 +164,16 @@ def state_list(clear: bool=True, *args):
 def state_add(*args):
     tui.draw_substate('Добавление')
     
-    print(f"Введите {Fore.GREEN}название{CR} продукта (до {Fore.CYAN}{data.PRODUCT_NAME_LEN}{CR} символов)")
+    print(f"Введите {Fore.GREEN}название{CR} продукта (до "\
+          f"{Fore.CYAN}{data.PRODUCT_NAME_LEN}{CR} символов)")
     product_name = tui.input_str(data.PRODUCT_NAME_LEN)
     
-    print(f"Введите {Fore.GREEN}стоимость{CR} продукта (до {Fore.CYAN}2{CR} знаков после точки)")
+    print(f"Введите {Fore.GREEN}стоимость{CR} продукта (до "\
+          f"{Fore.CYAN}2{CR} знаков после точки)")
     product_cost = tui.input_float(data.PRODUCT_COST_MAX, 2)
 
-    print(f"Введите {Fore.GREEN}категорию{CR} продукта (до {Fore.CYAN}{data.PRODUCT_TYPE_LEN}{CR} символов)")
+    print(f"Введите {Fore.GREEN}категорию{CR} продукта (до "\
+          f"{Fore.CYAN}{data.PRODUCT_TYPE_LEN}{CR} символов)")
     product_type = tui.input_str(data.PRODUCT_TYPE_LEN)
     
     product_date = tui.input_date()
@@ -178,7 +186,8 @@ def state_add(*args):
     print(f"Дата:\t\t{Fore.CYAN}{dtf.display_data(product_date)}{CR}")
     
     if tui.input_bool():
-        data.add_product(product_name, product_cost, product_type, product_date)
+        data.add_product(product_name, product_cost, 
+                         product_type, product_date)
     return state_main
 
 

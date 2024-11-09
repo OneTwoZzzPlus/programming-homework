@@ -20,7 +20,8 @@ available = lambda: data is not None
 
 # Для отображения
 display_cost = lambda x: f"{x/100:.2f}"
-display_row = lambda x: (str(x[0]), x[1], display_cost(x[2]), x[3], dtf.display_utc(x[4]))
+display_row = lambda x: (str(x[0]), x[1], display_cost(x[2]), 
+                         x[3], dtf.display_utc(x[4]))
 
 # Для рисования таблиц
 table_head = ["ID", "Название", "Цена", "Категория", "Дата"]
@@ -29,7 +30,7 @@ cost_length = len(str(PRODUCT_COST_MAX)) + 1
 table_width_min = lambda: [id_length(), 10, 6, 10, 8]
 
 # Индексаторы
-index_eq: list[int] = []  # Сопоставление индексов индексаторов и данных
+index_eq: list[int] = []  # Сопоставление индексаторов и ID
 index_type: dict[str, list[int]] = {}   # Индексатор по категории
 index_date: dict[int, list[int]] = {}   # Индексатор по дате
 
@@ -40,7 +41,8 @@ def _validate_product(index: int, pname, pcost, ptype, pdate):
         # Название
         product_name = str(pname)
         if len(product_name) >= PRODUCT_NAME_LEN:
-            raise TypeError(f"длина названия превышает {PRODUCT_NAME_LEN}")
+            raise TypeError(
+                f"длина названия превышает {PRODUCT_NAME_LEN}")
         # Цена
         product_cost = int(pcost)
         if product_cost <= 0:
@@ -50,14 +52,17 @@ def _validate_product(index: int, pname, pcost, ptype, pdate):
         # Категория
         product_type = str(ptype)
         if len(product_type) >= PRODUCT_TYPE_LEN:
-            raise ValueError(f"длина названия превышает {PRODUCT_NAME_LEN}")
+            raise ValueError(
+                f"длина названия превышает {PRODUCT_NAME_LEN}")
         # Дата
         product_date = dtf.correct(int(pdate))
         if product_date <= 0 or product_date >= dtf.MAX_DATE:
             raise TypeError
-        return (index, product_name, product_cost, product_type, product_date)
+        return (index, product_name, product_cost, 
+                product_type, product_date)
     except (TypeError, ValueError) as e:
-        logging.info(f"Проигнорировано, т.к. {e}: {(pname, pcost, ptype, pdate)}")
+        logging.info(f"Проигнорировано, т.к. {e}: {(
+                       pname, pcost, ptype, pdate)}")
         return None
 
 
@@ -79,8 +84,9 @@ def _add_row_as_product(x: list):
     if len(x) == 4:
         _add_product(*x)
     else:
-        logging.info(f"Строка проигнорировано, т.к. разделителей '{DELIMITER}' слишком"\
-                     f" {"МНОГО" if len(x) > 4 else "МАЛО"}: {x}")
+        logging.info(
+            f"Строка проигнорировано, т.к. разделителей '{DELIMITER}'"\
+            f"слишком {"МНОГО" if len(x) > 4 else "МАЛО"}: {x}")
     
 
 def load_file(path: str='base.csv') -> bool:
@@ -89,7 +95,8 @@ def load_file(path: str='base.csv') -> bool:
     try:
         # Читаем файл
         file = open(path, 'r', encoding='utf-8')
-        file_reader  = csv.reader(file, delimiter=DELIMITER, lineterminator=LINETERMINATOR)
+        file_reader  = csv.reader(file, delimiter=DELIMITER, 
+                                  lineterminator=LINETERMINATOR)
         current_path = path
         # Очищаем место хранение данных и индексаторы
         data = []
@@ -124,7 +131,8 @@ def save_file(path: str=None) -> bool:
     try:
         # Открываем файл для записи
         file = open(path, 'w', encoding='utf-8')
-        file_writer = csv.writer(file, delimiter=DELIMITER, lineterminator=LINETERMINATOR)
+        file_writer = csv.writer(file, delimiter=DELIMITER, 
+                                 lineterminator=LINETERMINATOR)
         current_path = path
         # Построчно записываем
         for x in data:
@@ -133,7 +141,9 @@ def save_file(path: str=None) -> bool:
                 try:
                     file_writer.writerow(list(x[1:]))
                 except Exception as e:
-                    logging.warning(f"Неожиданная ошибка '{e}' при записи продукта {x}")
+                    logging.warning(
+                        f"Неожиданная ошибка '{e}' при записи {x}"
+                        )
         # Закрываем файл
         file.close()
         return True
@@ -141,7 +151,8 @@ def save_file(path: str=None) -> bool:
         return False
     
 
-def add_product(product_name: str, product_cost: float, product_type: str, product_date: dtf.date):
+def add_product(product_name: str, product_cost: float, 
+                product_type: str, product_date: dtf.date):
     """ Добавление продукта O(1) """
     _add_product(
         product_name, int(product_cost * 100), 
@@ -206,7 +217,10 @@ def get_list_type(t: str):
         
         
 def sort_cost(inc: bool):
-    """ Сортировка по возрастанию(inc=True) / убыванию(inc=False) стоимости O(n*logn + n) """
+    """ 
+    Сортировка по возрастанию(inc=True) /
+    убыванию(inc=False) стоимости O(n*logn + n) 
+    """
     data.sort(key=lambda x: 0 if x is None else x[2], reverse=not(inc))
     # Восстанавливаем индексацию через index_eq
     i = 0
